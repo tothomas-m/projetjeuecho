@@ -43,14 +43,15 @@ def creer_sauvegarde_vierge():
     
     return {
         "id_dernier_checkpoint": id_depart,
-        "vis_map": vis_map_vierge,
-        "items": [],
+        "pv": 5,
+#        "items": [],
         "argent": 0,
         "ameliorations": {
             "double_saut": False,
             "dash": False,
             "echo_dir": False,
         },
+        "vis_map": vis_map_vierge,
     }
 
 def sauvegarder_partie(id_slot, donnees_partie):

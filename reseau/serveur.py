@@ -297,6 +297,7 @@ class Serveur:
                             else points_sauvegarde.get_point_depart()[1])
 
         nouveau_joueur = Joueur(spawn_x, spawn_y, id_joueur)
+        nouveau_joueur.pv = self.donnees_partie.get("pv", PV_JOUEUR_MAX)
         if id_joueur == 0:
             nouveau_joueur.argent = self.donnees_partie.get("argent", 0)
         ameliorations = self.donnees_partie.get("ameliorations", {})
@@ -431,12 +432,13 @@ class Serveur:
                                     y_tuile = joueur_ckpt.rect.y // TAILLE_TUILE
                                     id_ckpt = f"{x_tuile}_{y_tuile}"
                                     self.donnees_partie["id_dernier_checkpoint"] = id_ckpt
-                                    self.donnees_partie["vis_map"] = [
-                                        row[:] for row in self.cartes_visibilite[id_joueur]]
+                                    self.donnees_partie["pv"] = joueur_ckpt.pv
                                     self.donnees_partie["argent"] = joueur_ckpt.argent
                                     self.donnees_partie["ameliorations"]["double_saut"] = joueur_ckpt.peut_double_saut
                                     self.donnees_partie["ameliorations"]["dash"]        = joueur_ckpt.peut_dash
                                     self.donnees_partie["ameliorations"]["echo_dir"]    = joueur_ckpt.peut_echo_dir
+                                    self.donnees_partie["vis_map"] = [
+                                        row[:] for row in self.cartes_visibilite[id_joueur]]
                                     gestion_sauvegarde.sauvegarder_partie(self.id_slot, self.donnees_partie)
 
                         # NOUVEAU — Interaction pancarte lore
@@ -524,7 +526,17 @@ class Serveur:
 
         t_recv.join()
         t_send.join()
-
+        """
+        joueur = self.joueurs[id_joueur]
+        self.donnees_partie["pv"] = joueur.pv
+        self.donnees_partie["argent"] = joueur.argent
+        self.donnees_partie["ameliorations"]["double_saut"] = joueur.peut_double_saut
+        self.donnees_partie["ameliorations"]["dash"]        = joueur.peut_dash
+        self.donnees_partie["ameliorations"]["echo_dir"]    = joueur.peut_echo_dir
+        self.donnees_partie["vis_map"] = [
+            row[:] for row in self.cartes_visibilite[id_joueur]]
+        gestion_sauvegarde.sauvegarder_partie(self.id_slot, self.donnees_partie)
+        """
         print(f"[SERVEUR] Client {id_joueur} deconnecte.")
         try:
             connexion_client.close()
@@ -619,12 +631,13 @@ class Serveur:
                         y_tuile = joueur_ckpt.rect.y // TAILLE_TUILE
                         id_ckpt = f"{x_tuile}_{y_tuile}"
                         self.donnees_partie["id_dernier_checkpoint"] = id_ckpt
-                        self.donnees_partie["vis_map"] = [
-                            row[:] for row in self.cartes_visibilite[id_joueur]]
+                        self.donnees_partie["pv"] = joueur_ckpt.pv
                         self.donnees_partie["argent"] = joueur_ckpt.argent
                         self.donnees_partie["ameliorations"]["double_saut"] = joueur_ckpt.peut_double_saut
                         self.donnees_partie["ameliorations"]["dash"]        = joueur_ckpt.peut_dash
                         self.donnees_partie["ameliorations"]["echo_dir"]    = joueur_ckpt.peut_echo_dir
+                        self.donnees_partie["vis_map"] = [
+                            row[:] for row in self.cartes_visibilite[id_joueur]]
                         gestion_sauvegarde.sauvegarder_partie(self.id_slot, self.donnees_partie)
             if payload.get('interagir'):
                 shop_item = payload.get('shop_item', None)
@@ -1119,12 +1132,13 @@ class Serveur:
                             if joueur.rect.colliderect(rect_save):
                                 if self.donnees_partie["id_dernier_checkpoint"] != id_save:
                                     self.donnees_partie["id_dernier_checkpoint"] = id_save
-                                    self.donnees_partie["vis_map"] = [
-                                        row[:] for row in self.cartes_visibilite[id_joueur]]
+                                    self.donnees_partie["pv"] = joueur.pv
                                     self.donnees_partie["argent"] = joueur.argent
                                     self.donnees_partie["ameliorations"]["double_saut"] = joueur.peut_double_saut
                                     self.donnees_partie["ameliorations"]["dash"]        = joueur.peut_dash
                                     self.donnees_partie["ameliorations"]["echo_dir"]    = joueur.peut_echo_dir
+                                    self.donnees_partie["vis_map"] = [
+                                        row[:] for row in self.cartes_visibilite[id_joueur]]
                                     gestion_sauvegarde.sauvegarder_partie(
                                         self.id_slot, self.donnees_partie)
             # --- Potions ---
